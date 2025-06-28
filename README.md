@@ -258,4 +258,4 @@ For support and questions:
 
 ---
 
-**Tech Bite** - Quick, insightful posts about emerging tech trends, gadgets, and tips for Nigerian enthusiasts and small businesses.
+**Tech Bite** - Quick, insightful posts about emerging tech trends, gadgets, and tips for Tech enthusiasts and small businesses.
