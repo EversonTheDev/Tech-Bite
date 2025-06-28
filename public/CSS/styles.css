@@ -82,7 +82,7 @@ section.blog-posts{
 .blog-posts h2{
   text-align: center;
   margin-bottom: 2rem;
-  color: var(--header-text);
+  color: var(--header-text) !important;
 }
 
 .blog-posts .card {
