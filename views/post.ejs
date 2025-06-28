@@ -1,0 +1,311 @@
+<%- include('partials/header.ejs') %>
+
+<!-- Hero Section with Post Header -->
+<div class="post-hero">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 hero-head">
+                <nav aria-label="breadcrumb" class="post-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/#blog-posts">Blog</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><%= post.title %></li>
+                    </ol>
+                </nav>
+                
+                <div class="post-header">
+                    <h1 class="post-title"><%= post.title %></h1>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <i class="bi bi-person-circle"></i>
+                            <span>By <%= post.author %></span>
+                        </div>
+                        <div class="post-category">
+                            <span class="badge bg-primary"><%= post.category %></span>
+                        </div>
+                        <div class="post-date">
+                            <i class="bi bi-calendar3"></i>
+                            <span><%= post.createdAt.toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                            }) %></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Edit and Delete Buttons -->
+                    <div class="post-actions">
+                        <% if (post.id === 0 || post.id === 1 || post.id === 2) { %>
+                            <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                <i class="bi bi-pencil"></i> Edit Post
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-sm" disabled>
+                                <i class="bi bi-trash"></i> Delete Post
+                            </button>
+                        <% } else { %>
+                            <a href="/post/<%= post.id %>/edit" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-pencil"></i> Edit Post
+                            </a>
+                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="bi bi-trash"></i> Delete Post
+                            </button>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container post-content-wrapper">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 hero-content">
+            <!-- Featured Image -->
+            <% if (post.imagePath) { %>
+                <div class="post-featured-image">
+                    <img src="/<%= post.imagePath %>" class="img-fluid rounded" alt="<%= post.title %>">
+                </div>
+            <% } %>
+            
+            <!-- Post Content -->
+            <article class="post-content">
+                <div class="content-text">
+                    <p><%= post.content %></p>
+                </div>
+            </article>
+            
+            <!-- Social Sharing -->
+            <div class="post-social-sharing">
+                <h5>Share this post:</h5>
+                <div class="social-buttons">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent('http://localhost:3000/post/' + post.id) %>" rel="noopener noreferrer"
+                       target="_blank" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-facebook"></i> Facebook
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(post.title) %>&url=<%= encodeURIComponent('http://localhost:3000/post/' + post.id) %>" rel="noopener noreferrer"
+                       target="_blank" class="btn btn-outline-info btn-sm">
+                        <i class="bi bi-twitter"></i> Twitter
+                    </a>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent('http://localhost:3000/post/' + post.id) %>" rel="noopener noreferrer"
+                       target="_blank" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-linkedin"></i> LinkedIn
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <h3>Comments (<%= post.comments ? post.comments.length : 0 %>)</h3>
+                
+                <!-- Comment Form -->
+                <div class="comment-form-container">
+                    <h5>Leave a comment</h5>
+                    <form action="/post/<%= post.id %>/comment" method="POST" class="comment-form">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <input type="text" class="form-control" name="name" placeholder="Your name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <input type="email" class="form-control" name="email" placeholder="Your email" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" name="comment" rows="4" placeholder="Share your thoughts..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Post Comment</button>
+                    </form>
+                </div>
+                
+                <!-- Comments List -->
+                <div class="comments-list">
+                    <% if (post.comments && post.comments.length > 0) { %>
+                        <% post.comments.forEach(function(comment) { %>
+                            <div class="comment-item">
+                                <div class="comment-header">
+                                    <div class="comment-author">
+                                        <i class="bi bi-person-circle"></i>
+                                        <strong><%= comment.name %></strong>
+                                    </div>
+                                    <div class="comment-date">
+                                        <%= comment.createdAt.toLocaleDateString('en-US', { 
+                                            year: 'numeric', 
+                                            month: 'short', 
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        }) %>
+                                    </div>
+                                </div>
+                                <div class="comment-content">
+                                    <p><%= comment.comment %></p>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="no-comments">
+                            <p>No comments yet. Be the first to share your thoughts!</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            
+            <!-- Back to Home Button -->
+            <div class="post-navigation">
+                <a href="/" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="post-sidebar">
+                <div class="sidebar-widget">
+                    <h5>About the Author</h5>
+                    <div class="author-info">
+                        <div class="author-avatar">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <h6><%= post.author %></h6>
+                        <p>Tech enthusiast and blogger sharing insights about the latest in technology.</p>
+                    </div>
+                </div>
+                
+                <div class="sidebar-widget">
+                    <h5>Recent Posts</h5>
+                    <div class="recent-posts">
+                        <% if (typeof recentPosts !== 'undefined' && recentPosts.length > 0) { %>
+                            <% recentPosts.slice(0, 3).forEach(function(recentPost) { %>
+                                <div class="recent-post-item">
+                                    <a href="/post/<%= recentPost.id %>">
+                                        <h6><%= recentPost.title %></h6>
+                                        <small><%= recentPost.createdAt.toLocaleDateString() %></small>
+                                    </a>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <p>No recent posts available.</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal for Post Update -->
+<!-- Debug: success = <%= typeof success !== 'undefined' ? success : 'undefined' %> -->
+<% if (typeof success !== 'undefined' && success) { %>
+<div class="modal fade" id="updateSuccessModal" tabindex="-1" aria-labelledby="updateSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="updateSuccessModalLabel">
+                    <i class="bi bi-check-circle"></i> Post Updated Successfully!
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                </div>
+                <p class="text-center">Your blog post has been updated successfully!</p>
+                <p class="text-center text-muted">The changes are now live on your blog.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    <i class="bi bi-check"></i> Great!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete "<strong><%= post.title %></strong>"?</p>
+                <p class="text-muted">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="/post/<%= post.id %>/delete" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer.ejs') %>
+
+<script>
+// Handle update success modal
+console.log('Script loaded, success value:', typeof success !== 'undefined' ? success : 'undefined');
+
+<% if (typeof success !== 'undefined' && success) { %>   // This is how its meant to be
+console.log('Success is true, setting up modal...');
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, checking for modal...');
+    
+    // Clear URL parameters to prevent modal from showing again on refresh
+    if (window.history.replaceState) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    // Show the modal using Bootstrap's modal API
+    const modalElement = document.getElementById('updateSuccessModal');
+    console.log('Modal element found:', modalElement);
+    
+    if (modalElement) {
+        console.log('Bootstrap available:', typeof bootstrap !== 'undefined');
+        
+        if (typeof bootstrap !== 'undefined') {
+            console.log('Using Bootstrap modal API...');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+            console.log('Modal should be visible now');
+            
+            // Auto-hide modal after 5 seconds
+            setTimeout(function() {
+                modal.hide();
+            }, 5000);
+        } else {
+            console.log('Using fallback modal method...');
+            // Fallback: manually show modal if Bootstrap is not available
+            modalElement.classList.add('show');
+            modalElement.style.display = 'block';
+            modalElement.setAttribute('aria-hidden', 'false');
+            
+            // Add backdrop
+            const backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            document.body.appendChild(backdrop);
+            
+            // Auto-hide after 5 seconds
+            setTimeout(function() {
+                modalElement.classList.remove('show');
+                modalElement.style.display = 'none';
+                modalElement.setAttribute('aria-hidden', 'true');
+                if (backdrop) {
+                    backdrop.remove();
+                }
+            }, 5000);
+        }
+    } else {
+        console.log('Modal element not found!');
+    }
+});
+<% } else { %>
+console.log('Success is false or undefined');
+<% } %>
+</script>

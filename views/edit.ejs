@@ -1,0 +1,54 @@
+<%- include('partials/header.ejs') %>
+
+<div class="create-form-container">
+    <h1>Edit Post</h1>
+
+    <form action="/post/<%= post.id %>/update" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="<%= post.title %>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="author">Author</label>
+            <input type="text" class="form-control" id="author" name="author" value="<%= post.author %>" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="category">Category</label>
+            <input list="categories" class="form-control" id="category" name="category" value="<%= post.category %>" required placeholder="Select or type a category">
+            <datalist id="categories">
+                <option value="Smartphones & Accessories">
+                <option value="Laptops & Computing">
+                <option value="Networking & Connectivity">
+                <option value="Renewable Energy Gadgets">
+                <option value="Tech Tips & Hacks">
+                <option value="Emerging Trends">
+                <option value="Product Reviews">
+            </datalist>
+        </div>
+
+        <div class="form-group">
+            <label for="content">Content</label>
+            <textarea class="form-control" id="content" name="content" rows="5" required><%= post.content %></textarea>    
+        </div>
+
+        <div class="form-group">
+            <label for="image">Choose a new image (optional):</label>
+            <input type="file" id="image" name="image" accept=".png, .jpg, .jpeg, .webp" />
+            <% if (post.imagePath) { %>
+                <div class="current-image mt-2">
+                    <p><strong>Current image:</strong></p>
+                    <img src="/<%= post.imagePath %>" alt="Current post image" style="max-width: 200px; height: auto; border-radius: 8px;">
+                </div>
+            <% } %>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Update Post</button>
+            <a href="/post/<%= post.id %>" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<%- include('partials/footer.ejs') %>

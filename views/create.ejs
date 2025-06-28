@@ -1,0 +1,46 @@
+<%- include('partials/header.ejs') %>
+
+<div class="create-form-container">
+    <h1>Create a New Post</h1>
+
+    <form action="/create" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+
+        <div class="form-group">
+            <label for="author">Author</label>
+            <input type="text" class="form-control" id="author" name="author" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="category">Category</label>
+            <input list="categories" class="form-control" id="category" name="category" required placeholder="Select or type a category">
+            <datalist id="categories">
+                <option value="Smartphones & Accessories">
+                <option value="Laptops & Computing">
+                <option value="Networking & Connectivity">
+                <option value="Renewable Energy Gadgets">
+                <option value="Tech Tips & Hacks">
+                <option value="Emerging Trends">
+                <option value="Product Reviews">
+            </datalist>
+        </div>
+
+        <div class="form-group">
+            <label for="content">Content</label>
+            <textarea class="form-control" id="content" name="content" rows="5" required></textarea>    
+        </div>
+
+        <div class="form-group">
+            <label for="image">Choose an image:</label>
+            <input type="file" id="image" name="image" accept=".png, .jpg, .jpeg, .webp" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create Post</button>
+    </form>
+</div>
+
+
+<%- include('partials/footer.ejs') %>

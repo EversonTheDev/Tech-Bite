@@ -1,0 +1,136 @@
+<%- include('partials/header.ejs') %>
+
+<!-- Update Success Modal -->
+<% if (typeof success !== 'undefined' && success && postId) { %>
+<div class="container mt-4">
+  <div class="alert alert-success alert-dismissible fade show d-flex align-items-center justify-content-between" role="alert">
+    <div>
+      <i class="bi bi-check-circle-fill me-2"></i>
+      Post created successfully!
+    </div>
+    <div>
+      <a href="/post/<%= postId %>" class="btn btn-success btn-sm me-2">View Post</a>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<!-- Delete Success Modal -->
+<% if (typeof success !== 'undefined' && success && action === 'delete') { %>
+<div class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="deleteSuccessModalLabel">
+                    <i class="bi bi-check-circle"></i> Post Deleted Successfully!
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <i class="bi bi-trash-fill text-success" style="font-size: 3rem;"></i>
+                </div>
+                <p class="text-center">Your blog post has been deleted successfully!</p>
+                <p class="text-center text-muted">The post has been permanently removed from your blog.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    <i class="bi bi-check"></i> Got it!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>
+
+<!-------- HOME PAGE -------->
+<section class="hero">
+    <div class="px-4 py-5 text-center home-container"> 
+        <img class="d-block mx-auto mb-4" src="/images/Tech-Byte-logo2.png" alt="" width="72" height="57"> 
+        <h1 class="display-5 fw-bold text-body-emphasis">Tech Bite</h1> 
+        <div class="col-lg-6 mx-auto"> 
+            <p class="lead mb-4">Quick, insightful posts about emerging tech trends, gadgets, and tips for Nigerian enthusiasts and small businesses.</p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center"> 
+                <form action="/create" method="get">
+                    <input type="submit" value="Create Blog" class="btn btn-primary btn-lg px-4 gap-3">
+                </form>
+            </div> 
+        </div> 
+    </div>
+</section>
+
+<!------ BLOG POSTS ------------>
+<section class="blog-posts">
+    <div class="container">
+        <div class="row row-gap-4">
+            <!-- All posts (static + user posts) -->
+            <% if (posts && posts.length) { %>
+                <% posts.forEach(post => { %>
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="/<%= post.imagePath ? post.imagePath : 'images/default-image.png' %>" class="card-img-top" alt="Post Image">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= post.title %></h5>
+                            <p class="card-text"><small class="text-muted">By <%= post.author %> (<%= new Date(post.createdAt).toLocaleDateString() %>)</small></p>
+                            <p class="card-text"><%= post.content.substring(0, 100) %>...</p>
+                            <p class="card-text"><small class="text-muted"> Category: <%= post.category %></small></p>
+                            <a href="/post/<%= post.id %>" class="btn btn-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+                <% }) %>
+            <% } else { %>
+                <div class="alert alert-info w-100" role="alert">
+                    No blog posts available yet. Be the first to create one!
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>    
+    
+<%- include('partials/footer.ejs') %>
+
+<script>
+// Handle delete success modal
+<% if (typeof success !== 'undefined' && success && action === 'delete') { %>
+document.addEventListener('DOMContentLoaded', function() {
+    // Clear URL parameters to prevent modal from showing again on refresh
+    if (window.history.replaceState) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
+    // Show the modal using Bootstrap's modal API
+    const modalElement = document.getElementById('deleteSuccessModal');
+    if (modalElement && typeof bootstrap !== 'undefined') {
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+        
+        // Auto-hide modal after 5 seconds
+        setTimeout(function() {
+            modal.hide();
+        }, 5000);
+    } else if (modalElement) {
+        // Fallback: manually show modal if Bootstrap is not available
+        modalElement.classList.add('show');
+        modalElement.style.display = 'block';
+        modalElement.setAttribute('aria-hidden', 'false');
+        
+        // Add backdrop
+        const backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop fade show';
+        document.body.appendChild(backdrop);
+        
+        // Auto-hide after 5 seconds
+        setTimeout(function() {
+            modalElement.classList.remove('show');
+            modalElement.style.display = 'none';
+            modalElement.setAttribute('aria-hidden', 'true');
+            if (backdrop) {
+                backdrop.remove();
+            }
+        }, 5000);
+    }
+});
+<% } %>
+</script>
