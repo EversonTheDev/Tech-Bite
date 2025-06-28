@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const upload = multer({ dest: 'public/uploads/' }); // Set the destination for uploaded files to the 'uploads' directory
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Use environment variable for port or default to 3000
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
