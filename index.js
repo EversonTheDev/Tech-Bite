@@ -107,8 +107,8 @@ app.get("/post/:id", (req, res) =>{ // render post page when the user clicks on 
             .slice(0, 3); // Get the first 3 recent posts
             
         res.render("post.ejs", { 
-            activePage: "post", 
-            post: post,
+            activePage: "post", // Just to make the blue stuff not show on any navigation
+            post: post,  // passes the post as an object (The post was originally an object stored in the array)
             recentPosts: recentPosts,
             success: success
         }); // Render the post page with the found post
